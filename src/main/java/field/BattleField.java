@@ -1,6 +1,7 @@
 package field;
 
 import creature.Creature;
+import sun.java2d.pipe.SpanIterator;
 import ui.BattleFieldSprite;
 
 public class BattleField {
@@ -26,7 +27,9 @@ public class BattleField {
         if(creatures[x][y]!=null){
             return false;
         }
-        if(isValidPosition(fromX,fromY)&&creatures[x][y]!=creature){
+        if(isValidPosition(fromX,fromY)&&creatures[fromX][fromY]!=creature){
+            System.out.println(creatures[x][y].getName());
+            System.out.println(creature.getName());
             return false;
         }
         creatures[x][y] = creature;

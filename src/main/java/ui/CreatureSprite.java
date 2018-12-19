@@ -16,6 +16,7 @@ public class CreatureSprite {
 
     private ImageView profileImage;
     private ProgressBar hpBar;
+    private int xPixel, yPixel;
 
     public static int UNIT_LENGTH = Main.UNIT_LENGTH;
     private final double hpBarWidth = UNIT_LENGTH*0.8;
@@ -31,16 +32,37 @@ public class CreatureSprite {
         hpBar.setProgress(1.0);
     }
 
-    public void moveTo(int x,int y){
-        profileImage.setX(x*UNIT_LENGTH);
-        profileImage.setY(y*UNIT_LENGTH);
-        hpBar.setTranslateX(x*UNIT_LENGTH+(UNIT_LENGTH-hpBarWidth)/2);
-        hpBar.setTranslateY(y*UNIT_LENGTH);
+    public void moveToByPixel(int x,int y){
+        profileImage.setX(x);
+        profileImage.setY(y);
+        hpBar.setTranslateX(x+(UNIT_LENGTH-hpBarWidth)/2);
+        hpBar.setTranslateY(y);
+
+        this.xPixel = x;
+        this.yPixel = y;
+    }
+
+    public void moveToByUnit(int x,int y){
+        moveToByPixel(x*UNIT_LENGTH,y*UNIT_LENGTH);
     }
 
     public void setHp(int hpValue,int hpMaxValue){
         hpBar.setProgress((double)hpValue/(double)hpMaxValue);
     }
 
+    public int getXPixel() {
+        return xPixel;
+    }
 
+    public int getYPixel() {
+        return yPixel;
+    }
+
+    public int getXUnit(){
+        return xPixel/UNIT_LENGTH;
+    }
+
+    public int getYUnit(){
+        return yPixel/UNIT_LENGTH;
+    }
 }

@@ -4,10 +4,12 @@ import com.sun.jmx.snmp.SnmpUsmKeyHandler;
 import creature.*;
 import field.BattleField;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import sun.tools.jconsole.Plotter;
 import ui.BattleFieldSprite;
@@ -39,28 +41,24 @@ public class Main extends Application {
         BattleField bf = new BattleField(WIDTH_UNIT,HEIGHT_UNIT);
         bf.getBfs().draw(UNIT_LENGTH,canvas);
 
-        List<CalabashMan> brothers = new ArrayList<>();
+//        List<CalabashMan> brothers = new ArrayList<>();
         for(int i=1;i<=7;i++){
             CalabashMan man = CalabashMan.getInstance(i);
-            brothers.add(man);
+//            brothers.add(man);
             root.getChildren().addAll(man.getSprite().getProfileImage(),man.getSprite().getHpBar());
-//            man.moveTo(1,i+1);
             man.enterBattleField(bf,1,i+1);
         }
 
         GrandFather grandFather = GrandFather.getInstance();
         root.getChildren().addAll(grandFather.getSprite().getProfileImage(),grandFather.getSprite().getHpBar());
-//        grandFather.moveTo(0,HEIGHT_UNIT/2);
         grandFather.enterBattleField(bf,0,HEIGHT_UNIT/2);
 
         SnakeWoman snakeWoman = SnakeWoman.getInstance();
         root.getChildren().addAll(snakeWoman.getSprite().getProfileImage(), snakeWoman.getSprite().getHpBar());
-//        snakeWoman.moveTo(WIDTH_UNIT-1,HEIGHT_UNIT/2);
         snakeWoman.enterBattleField(bf,WIDTH_UNIT-1,HEIGHT_UNIT/2);
 
         ScorpionMan scorpionMan = ScorpionMan.getInstance();
         root.getChildren().addAll(scorpionMan.getSprite().getProfileImage(),scorpionMan.getSprite().getHpBar());
-//        scorpionMan.moveTo(WIDTH_UNIT-4,HEIGHT_UNIT/2);
         scorpionMan.enterBattleField(bf,WIDTH_UNIT-4,HEIGHT_UNIT/2);
 
         List<Minion> minions = new ArrayList<>();
@@ -68,9 +66,19 @@ public class Main extends Application {
             Minion minion = Minion.getInstance(i);
             minions.add(minion);
             root.getChildren().addAll(minion.getSprite().getProfileImage(),minion.getSprite().getHpBar());
-//            minion.moveTo(WIDTH_UNIT-(i%3+1),(i<=3?-1:1)*(3-i%3)+HEIGHT_UNIT/2);
             minion.enterBattleField(bf,WIDTH_UNIT-(i%3+1),(i<=3?-1:1)*(3-i%3)+HEIGHT_UNIT/2);
         }
+
+        scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                grandFather.moveTo(grandFather.getSprite().getXUnit(),grandFather.getSprite().getYUnit()-1);
+                for(Minion m :minions){
+                    m.moveTo(m.getSprite().getXUnit()-1,m.getSprite().getYUnit());
+                    System.out.println(m.getSprite().getYUnit());
+                }
+            }
+        });
 
         primaryStage.show();
     }
