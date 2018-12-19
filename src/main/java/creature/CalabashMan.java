@@ -1,17 +1,26 @@
 package creature;
 
+import javafx.scene.Group;
+import javafx.scene.image.Image;
+import ui.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalabashMan extends Creature{
+public class CalabashMan extends PlayerCreature{
     /**
      * Please use getInstance() to get specific CalabashMan
-     * @param spriteFileName Image url
+     * @param image Sprite Image
      * @param name Name
      */
-    private CalabashMan(String spriteFileName, String name) {
-        super(spriteFileName, name);
+    private CalabashMan(Image image, String name) {
+        super(image, name);
     }
+
+    public static void gotoBattleField(Group root){
+
+    }
+
 
     private static List<CalabashMan> brothers = new ArrayList<>();
     static {
@@ -54,7 +63,7 @@ public class CalabashMan extends Creature{
                         name="七娃";
                         break;
                 }
-                brothers.set(index-1,new CalabashMan(String.format("%d.png",index),name));
+                brothers.set(index-1,new CalabashMan(ImageLoader.getImage(String.format("Calabash%d",index)),name));
             }
             return brothers.get(index - 1);
         }

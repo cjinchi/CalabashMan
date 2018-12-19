@@ -1,21 +1,23 @@
 package creature;
 
 import creature.Creature;
+import javafx.scene.image.Image;
+import ui.ImageLoader;
 
-public class GrandFather extends Creature {
+public class GrandFather extends PlayerCreature {
     /**
      * Please use getInstance() to get GrandFather
-     * @param spriteFileName Image url
+     * @param image Sprite Image
      * @param name Name
      */
-    private GrandFather(String spriteFileName, String name) {
-        super(spriteFileName, name);
+    private GrandFather(Image image, String name) {
+        super(image, name);
     }
 
     private static GrandFather gf;
     public static GrandFather getInstance(){
         if(gf == null){
-            gf = new GrandFather("grandfather.png","爷爷");
+            gf = new GrandFather(ImageLoader.getImage("GrandFather"),"爷爷");
         }
         return gf;
     }
