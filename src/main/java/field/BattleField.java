@@ -2,10 +2,9 @@ package field;
 
 import creature.Creature;
 import creature.PCCreature;
-import sun.java2d.pipe.SpanIterator;
 import ui.BattleFieldSprite;
 
-public class BattleField {
+public  class BattleField {
     private BattleFieldSprite bfs;
     private Creature[][] creatures;
     private int width,height;
@@ -63,5 +62,14 @@ public class BattleField {
 
     public Creature getCurrentSelectCreature() {
         return currentSelectCreature;
+    }
+
+    public synchronized Creature[] getNearbyCreatures(int x,int y){
+        Creature[] nearby = new Creature[4];
+        nearby[0] = (isValidPosition(x-1,y)?creatures[x-1][y]:null);
+        nearby[1] = (isValidPosition(x+1,y)?creatures[x+1][y]:null);
+        nearby[2] = (isValidPosition(x,y-1)?creatures[x][y-1]:null);
+        nearby[3] = (isValidPosition(x,y+1)?creatures[x][y+1]:null);
+        return nearby;
     }
 }

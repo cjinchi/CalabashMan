@@ -16,4 +16,9 @@ public class SnakeWoman extends PCCreature{
         return sw;
     }
 
+    @Override
+    public void run() {
+        //TODO
+        System.out.println("snake");
+    }
 }

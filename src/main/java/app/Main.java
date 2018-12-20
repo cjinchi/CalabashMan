@@ -47,22 +47,23 @@ public class Main extends Application {
 //            brothers.add(man);
             root.getChildren().addAll(man.getSprite().getProfileImage(),man.getSprite().getHpBar());
             man.enterBattleField(bf,1,i+1);
+            startThread(man);
         }
 
         GrandFather grandFather = GrandFather.getInstance();
         root.getChildren().addAll(grandFather.getSprite().getProfileImage(),grandFather.getSprite().getHpBar());
         grandFather.enterBattleField(bf,0,HEIGHT_UNIT/2);
+        startThread(grandFather);
 
         SnakeWoman snakeWoman = SnakeWoman.getInstance();
         root.getChildren().addAll(snakeWoman.getSprite().getProfileImage(), snakeWoman.getSprite().getHpBar());
         snakeWoman.enterBattleField(bf,WIDTH_UNIT-1,HEIGHT_UNIT/2);
+        startThread(snakeWoman);
 
         ScorpionMan scorpionMan = ScorpionMan.getInstance();
         root.getChildren().addAll(scorpionMan.getSprite().getProfileImage(),scorpionMan.getSprite().getHpBar());
         scorpionMan.enterBattleField(bf,WIDTH_UNIT-4,HEIGHT_UNIT/2);
-        Thread smTread = new Thread(scorpionMan);
-        smTread.setName(scorpionMan.getName());
-        smTread.start();
+        startThread(scorpionMan);
 
         List<Minion> minions = new ArrayList<>();
         for(int i=1;i<=Minion.TOTAL_NUM;i++){
@@ -71,9 +72,7 @@ public class Main extends Application {
             root.getChildren().addAll(minion.getSprite().getProfileImage(),minion.getSprite().getHpBar());
             minion.enterBattleField(bf,WIDTH_UNIT-(i%3+1),(i<=3?-1:1)*(3-i%3)+HEIGHT_UNIT/2);
 
-            Thread thread = new Thread(minion);
-            thread.setName(minion.getName());
-            thread.start();
+            startThread(minion);
         }
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -103,5 +102,11 @@ public class Main extends Application {
 
 
         primaryStage.show();
+    }
+
+    private void startThread(Creature creature){
+        Thread thread = new Thread(creature);
+        thread.setName(creature.getName());
+        thread.start();
     }
 }

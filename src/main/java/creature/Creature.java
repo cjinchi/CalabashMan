@@ -6,12 +6,15 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.image.Image;
 import ui.CreatureSprite;
 
-public class Creature {
-    private CreatureSprite sprite;
+public abstract class Creature implements Runnable{
+    protected CreatureSprite sprite;
     private String name;
-    private BattleField bf;
-    private int x = -1, y = -1;
+    protected BattleField bf;
+    protected int x = -1;
+    protected int y = -1;
     private boolean moving = false;
+    private int power;
+    protected AnimationTimer fightingTimer;
 
     public CreatureSprite getSprite() {
         return sprite;
@@ -96,5 +99,28 @@ public class Creature {
         moveTo(x+1,y);
     }
 
+    protected abstract int checkNearbyEnemy();
+
+    protected synchronized void startFightingAnimation(){
+        if(fightingTimer!=null){
+            throw new RuntimeException();
+        }
+        fightingTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                //I Love Math
+                sprite.getProfileImage().setRotate(Math.sin(now/100000000)*20);
+            }
+        };
+        fightingTimer.start();
+    }
+
+    protected synchronized void stopFightingAnimation(){
+        if(fightingTimer==null){
+            throw new RuntimeException();
+        }
+        fightingTimer.stop();
+        fightingTimer = null;
+    }
 
 }
