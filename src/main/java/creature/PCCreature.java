@@ -1,22 +1,19 @@
 package creature;
 
-import field.BattleField;
-import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
-
-import java.util.Random;
 
 public class PCCreature extends  Creature {
     protected PCCreature(Image image, String name) {
         super(image, name);
+        maxhp = 150;
+        hp = maxhp;
     }
 
     @Override
-    protected int checkNearbyEnemy() {
-        Creature[] nearby = bf.getNearbyCreatures(this.x,this.y);
+    protected int getEnemyNum(Creature[] creatures) {
         int num = 0;
-        for(Creature creature:nearby){
+        for(Creature creature:creatures){
             if(creature instanceof PlayerCreature){
                 num ++;
             }
@@ -35,14 +32,22 @@ public class PCCreature extends  Creature {
                     num = 0;
                     Platform.runLater(()->{moveLeft();});
                 }
-                if(fightingTimer==null&&checkNearbyEnemy()>0){
-//                    System.out.println("begin "+this.getName());
-//                    startFightingAnimation();
+
+                Creature[] nearbyCreatures = bf.getNearbyCreatures(this.x,this.y);
+                int nearbyEnemyNum = getEnemyNum(nearbyCreatures);
+
+                if(fightingTimer==null&& nearbyEnemyNum>0){
                     Platform.runLater(()->{startFightingAnimation();});
-//                    System.out.println(fightingTimer);
-                }else if(fightingTimer!=null&&checkNearbyEnemy()==0){
-//                    stopFightingAnimation();
+                }else if(fightingTimer!=null&& nearbyEnemyNum==0){
                     Platform.runLater(()->{stopFightingAnimation();});
+                }
+
+                if(nearbyEnemyNum>0){
+                    for(Creature creature:nearbyCreatures){
+                        if(creature instanceof PlayerCreature){
+                            creature.decreaseHp(power/nearbyEnemyNum);
+                        }
+                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

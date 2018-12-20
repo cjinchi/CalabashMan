@@ -1,19 +1,20 @@
 package creature;
 
-import field.BattleField;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 
 public class PlayerCreature extends Creature{
     protected PlayerCreature(Image image, String name) {
         super(image, name);
+        maxhp = 200;
+        hp = maxhp;
     }
 
+
     @Override
-    protected int checkNearbyEnemy() {
-        Creature[] nearby = bf.getNearbyCreatures(this.x,this.y);
+    protected int getEnemyNum(Creature[] creatures) {
         int num = 0;
-        for(Creature creature:nearby){
+        for(Creature creature:creatures){
             if(creature instanceof PCCreature){
                 num ++;
             }
@@ -26,16 +27,22 @@ public class PlayerCreature extends Creature{
         while (true){
             try {
                 Thread.sleep(500);
-                if(fightingTimer==null&&checkNearbyEnemy()>0){
-//                    System.out.println("begin " +this.getName());
-//                    startFightingAnimation();
-//                    System.out.println(fightingTimer);
-                    Platform.runLater(()->{startFightingAnimation();});
-                }else if(fightingTimer!=null&&checkNearbyEnemy()==0){
-//                    System.out.println("end "+this.getName());
-//                    stopFightingAnimation();
-                    Platform.runLater(()->{stopFightingAnimation();});
 
+                Creature[] nearbyCreatures = bf.getNearbyCreatures(this.x,this.y);
+                int nearbyEnemyNum = getEnemyNum(nearbyCreatures);
+
+                if(fightingTimer==null&& nearbyEnemyNum>0){
+                    Platform.runLater(()->{startFightingAnimation();});
+                }else if(fightingTimer!=null&& nearbyEnemyNum ==0){
+                    Platform.runLater(()->{stopFightingAnimation();});
+                }
+
+                if(nearbyEnemyNum>0){
+                    for(Creature creature:nearbyCreatures){
+                        if(creature instanceof PCCreature){
+                            creature.decreaseHp(power/nearbyEnemyNum);
+                        }
+                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

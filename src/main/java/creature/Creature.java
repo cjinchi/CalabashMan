@@ -15,7 +15,9 @@ public abstract class Creature implements Runnable{
     protected int x = -1;
     protected int y = -1;
     private boolean moving = false;
-    private int power;
+    protected int hp;
+    protected int maxhp;
+    protected int power = 10;
     protected AnimationTimer fightingTimer;
 
     public CreatureSprite getSprite() {
@@ -111,7 +113,7 @@ public abstract class Creature implements Runnable{
         moveTo(x+1,y);
     }
 
-    protected abstract int checkNearbyEnemy();
+    protected abstract int getEnemyNum(Creature[] creatures);
 
     protected synchronized void startFightingAnimation(){
         if(getFightingTimer()!=null){
@@ -146,5 +148,14 @@ public abstract class Creature implements Runnable{
 
     private synchronized void setFightingTimer(AnimationTimer timer){
         this.fightingTimer = timer;
+    }
+
+    public void decreaseHp(int n){
+        int newHp = hp - n;
+        hp = newHp>0?newHp:0;
+        Platform.runLater(()->{sprite.setHp(hp,maxhp);});
+        if(hp==0){
+            //TODO:dead
+        }
     }
 }
