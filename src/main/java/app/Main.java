@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import sun.tools.jconsole.Plotter;
@@ -24,7 +25,6 @@ public class Main extends Application {
     public static final int HEIGHT_UNIT = 11;
     public static final int UNIT_LENGTH = 80;
 
-    private Creature[][] creatures = new Creature[WIDTH_UNIT][HEIGHT_UNIT];
 
 
     public void start(Stage primaryStage) throws Exception {
@@ -60,6 +60,9 @@ public class Main extends Application {
         ScorpionMan scorpionMan = ScorpionMan.getInstance();
         root.getChildren().addAll(scorpionMan.getSprite().getProfileImage(),scorpionMan.getSprite().getHpBar());
         scorpionMan.enterBattleField(bf,WIDTH_UNIT-4,HEIGHT_UNIT/2);
+        Thread smTread = new Thread(scorpionMan);
+        smTread.setName(scorpionMan.getName());
+        smTread.start();
 
         List<Minion> minions = new ArrayList<>();
         for(int i=1;i<=Minion.TOTAL_NUM;i++){
@@ -67,18 +70,37 @@ public class Main extends Application {
             minions.add(minion);
             root.getChildren().addAll(minion.getSprite().getProfileImage(),minion.getSprite().getHpBar());
             minion.enterBattleField(bf,WIDTH_UNIT-(i%3+1),(i<=3?-1:1)*(3-i%3)+HEIGHT_UNIT/2);
+
+            Thread thread = new Thread(minion);
+            thread.setName(minion.getName());
+            thread.start();
         }
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                grandFather.moveTo(grandFather.getSprite().getXUnit(),grandFather.getSprite().getYUnit()-1);
-                for(Minion m :minions){
-                    m.moveTo(m.getSprite().getXUnit()-1,m.getSprite().getYUnit());
-                    System.out.println(m.getSprite().getYUnit());
-                }
+                bf.clickOn(((int)event.getX())/UNIT_LENGTH,((int)event.getY())/UNIT_LENGTH);
+
             }
         });
+
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                Creature creature = bf.getCurrentSelectCreature();
+                if(creature!=null){
+                    switch (event.getCode()){
+                        case W:creature.moveUp();break;
+                        case S:creature.moveDown();break;
+                        case A:creature.moveLeft();break;
+                        case D:creature.moveRight();break;
+                    }
+                }
+
+            }
+        });
+
+
 
         primaryStage.show();
     }

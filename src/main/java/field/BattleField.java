@@ -1,6 +1,7 @@
 package field;
 
 import creature.Creature;
+import creature.PCCreature;
 import sun.java2d.pipe.SpanIterator;
 import ui.BattleFieldSprite;
 
@@ -8,6 +9,8 @@ public class BattleField {
     private BattleFieldSprite bfs;
     private Creature[][] creatures;
     private int width,height;
+
+    private Creature currentSelectCreature;
 
     public BattleField(int width,int height){
         bfs = new BattleFieldSprite(width,height);
@@ -47,4 +50,18 @@ public class BattleField {
         return moveTo(creature,x,y,-1,-1);
     }
 
+    public void clickOn(int x,int y){
+        if(!isValidPosition(x,y)){
+            return;
+        }
+        if(creatures[x][y]==null||creatures[x][y] instanceof PCCreature){
+            currentSelectCreature = null;
+        }else{
+            currentSelectCreature = creatures[x][y];
+        }
+    }
+
+    public Creature getCurrentSelectCreature() {
+        return currentSelectCreature;
+    }
 }

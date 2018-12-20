@@ -11,6 +11,7 @@ public class Creature {
     private String name;
     private BattleField bf;
     private int x = -1, y = -1;
+    private boolean moving = false;
 
     public CreatureSprite getSprite() {
         return sprite;
@@ -26,6 +27,10 @@ public class Creature {
     }
 
     public void moveTo(int newX,int newY){
+        if(moving){
+            return;
+        }
+
         boolean successful = false;
         boolean newHere = (this.x<0||this.y<0);
         if(newHere){
@@ -36,6 +41,8 @@ public class Creature {
         if(successful){
             if(!newHere){
                 //From here on,x and y are 'pixel-level'
+
+                moving = true;
 
                 final int xOldPixel = this.x*Main.UNIT_LENGTH;
                 final int yOldPixel = this.y*Main.UNIT_LENGTH;
@@ -52,6 +59,7 @@ public class Creature {
 
                         if(Math.abs(sprite.getXPixel()- xDstPixel)<10&&Math.abs(sprite.getYPixel()- yDstPixel)<10){
                             sprite.moveToByPixel(xDstPixel, yDstPixel);
+                            moving = false;
                             this.stop();
                         }else{
                             int deltaTime = (int)((now-startTime)/5000000);
@@ -71,5 +79,22 @@ public class Creature {
         this.bf = bf;
         moveTo(x,y);
     }
+
+    public void moveUp(){
+        moveTo(x,y-1);
+    }
+
+    public void moveDown(){
+        moveTo(x,y+1);
+    }
+
+    public void moveLeft(){
+        moveTo(x-1,y);
+    }
+
+    public void moveRight(){
+        moveTo(x+1,y);
+    }
+
 
 }
