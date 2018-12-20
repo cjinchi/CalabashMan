@@ -2,7 +2,9 @@ package creature;
 
 import app.Main;
 import field.BattleField;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import ui.CreatureSprite;
 
@@ -49,6 +51,7 @@ public abstract class Creature implements Runnable{
 
                 final int xOldPixel = this.x*Main.UNIT_LENGTH;
                 final int yOldPixel = this.y*Main.UNIT_LENGTH;
+                final boolean selected = (bf.getCurrentSelectCreature()==this);
                 new AnimationTimer() {
                     private final long startTime = System.nanoTime();
                     final int xDstPixel = newX*Main.UNIT_LENGTH;
@@ -56,17 +59,26 @@ public abstract class Creature implements Runnable{
                     final int xDeltaPixel = (xDstPixel>xOldPixel?1:(xDstPixel==xOldPixel?0:-1));
                     final int yDeltaPixel = (yDstPixel>yOldPixel?1:(yDstPixel==yOldPixel?0:-1));
 
-
                     @Override
                     public void handle(long now) {
 
                         if(Math.abs(sprite.getXPixel()- xDstPixel)<10&&Math.abs(sprite.getYPixel()- yDstPixel)<10){
-                            sprite.moveToByPixel(xDstPixel, yDstPixel);
-                            moving = false;
+                            Platform.runLater(()->{
+                                sprite.moveToByPixel(xDstPixel, yDstPixel);
+                                if(selected){
+                                    bf.getBfs().getOutline().moveToByPixel(xDstPixel,yDstPixel);
+                                }
+                                moving = false;
+                            });
                             this.stop();
                         }else{
                             int deltaTime = (int)((now-startTime)/5000000);
-                            sprite.moveToByPixel(xOldPixel+deltaTime* xDeltaPixel,yOldPixel+deltaTime* yDeltaPixel);
+                            Platform.runLater(()->{
+                                sprite.moveToByPixel(xOldPixel+deltaTime* xDeltaPixel,yOldPixel+deltaTime* yDeltaPixel);
+                                if(selected){
+                                    bf.getBfs().getOutline().moveToByPixel(xOldPixel+deltaTime* xDeltaPixel,yOldPixel+deltaTime* yDeltaPixel);
+                                }
+                            });
                         }
                     }
                 }.start();
@@ -102,25 +114,37 @@ public abstract class Creature implements Runnable{
     protected abstract int checkNearbyEnemy();
 
     protected synchronized void startFightingAnimation(){
-        if(fightingTimer!=null){
+        if(getFightingTimer()!=null){
             throw new RuntimeException();
         }
-        fightingTimer = new AnimationTimer() {
+        setFightingTimer(new AnimationTimer() {
             @Override
             public void handle(long now) {
                 //I Love Math
                 sprite.getProfileImage().setRotate(Math.sin(now/100000000)*20);
             }
-        };
-        fightingTimer.start();
+        });
+        getFightingTimer().start();
     }
 
     protected synchronized void stopFightingAnimation(){
-        if(fightingTimer==null){
+        if(getFightingTimer()==null){
             throw new RuntimeException();
         }
-        fightingTimer.stop();
-        fightingTimer = null;
+        sprite.getProfileImage().setRotate(0);
+        getFightingTimer().stop();
+        setFightingTimer(null);
     }
 
+    public synchronized boolean isMoving(){
+        return moving;
+    }
+
+    public synchronized AnimationTimer getFightingTimer() {
+        return fightingTimer;
+    }
+
+    private synchronized void setFightingTimer(AnimationTimer timer){
+        this.fightingTimer = timer;
+    }
 }

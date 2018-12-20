@@ -27,9 +27,15 @@ public class PlayerCreature extends Creature{
             try {
                 Thread.sleep(500);
                 if(fightingTimer==null&&checkNearbyEnemy()>0){
-                    startFightingAnimation();
+//                    System.out.println("begin " +this.getName());
+//                    startFightingAnimation();
+//                    System.out.println(fightingTimer);
+                    Platform.runLater(()->{startFightingAnimation();});
                 }else if(fightingTimer!=null&&checkNearbyEnemy()==0){
-                    stopFightingAnimation();
+//                    System.out.println("end "+this.getName());
+//                    stopFightingAnimation();
+                    Platform.runLater(()->{stopFightingAnimation();});
+
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

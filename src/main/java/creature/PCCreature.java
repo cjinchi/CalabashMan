@@ -31,14 +31,18 @@ public class PCCreature extends  Creature {
             try {
                 Thread.sleep(500);
                 num++;
-                if(num >= 3){
+                if(num >= 2){
                     num = 0;
                     Platform.runLater(()->{moveLeft();});
                 }
                 if(fightingTimer==null&&checkNearbyEnemy()>0){
-                    startFightingAnimation();
+//                    System.out.println("begin "+this.getName());
+//                    startFightingAnimation();
+                    Platform.runLater(()->{startFightingAnimation();});
+//                    System.out.println(fightingTimer);
                 }else if(fightingTimer!=null&&checkNearbyEnemy()==0){
-                    stopFightingAnimation();
+//                    stopFightingAnimation();
+                    Platform.runLater(()->{stopFightingAnimation();});
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

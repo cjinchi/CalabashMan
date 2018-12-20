@@ -6,6 +6,7 @@ import ui.BattleFieldSprite;
 
 public  class BattleField {
     private BattleFieldSprite bfs;
+
     private Creature[][] creatures;
     private int width,height;
 
@@ -50,13 +51,15 @@ public  class BattleField {
     }
 
     public void clickOn(int x,int y){
-        if(!isValidPosition(x,y)){
+        if(!isValidPosition(x,y)||(currentSelectCreature!=null&&currentSelectCreature.isMoving())){
             return;
         }
         if(creatures[x][y]==null||creatures[x][y] instanceof PCCreature){
             currentSelectCreature = null;
+            bfs.getOutline().moveToByUnit(-1,-1);
         }else{
             currentSelectCreature = creatures[x][y];
+            bfs.getOutline().moveToByUnit(x,y);
         }
     }
 

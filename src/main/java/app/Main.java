@@ -12,7 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import sun.tools.jconsole.Plotter;
 import ui.BattleFieldSprite;
 import ui.CreatureSprite;
 import ui.ImageLoader;
@@ -23,9 +22,7 @@ import java.util.List;
 public class Main extends Application {
     public static final int WIDTH_UNIT = 13;
     public static final int HEIGHT_UNIT = 11;
-    public static final int UNIT_LENGTH = 80;
-
-
+    public static final int UNIT_LENGTH = 60;
 
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("CalabashMan VS SnakeWoman (and others)");
@@ -39,7 +36,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         BattleField bf = new BattleField(WIDTH_UNIT,HEIGHT_UNIT);
-        bf.getBfs().draw(UNIT_LENGTH,canvas);
+        bf.getBfs().draw(UNIT_LENGTH,canvas,root);
 
 //        List<CalabashMan> brothers = new ArrayList<>();
         for(int i=1;i<=7;i++){
