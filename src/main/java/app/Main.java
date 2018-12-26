@@ -1,6 +1,5 @@
 package app;
 
-import com.sun.jmx.snmp.SnmpUsmKeyHandler;
 import creature.*;
 import field.BattleField;
 import javafx.application.Application;
@@ -8,13 +7,10 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import ui.BattleFieldSprite;
-import ui.CreatureSprite;
-import ui.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +20,9 @@ public class Main extends Application {
     public static final int HEIGHT_UNIT = 11;
     public static final int UNIT_LENGTH = 60;
 
+
     public void start(Stage primaryStage) throws Exception {
+
         primaryStage.setTitle("CalabashMan VS SnakeWoman (and others)");
 
         Group root = new Group();
@@ -44,23 +42,27 @@ public class Main extends Application {
 //            brothers.add(man);
             root.getChildren().addAll(man.getSprite().getProfileImage(),man.getSprite().getHpBar());
             man.enterBattleField(bf,1,i+1);
-            startThread(man);
+            man.start();
+//            startThread(man);
         }
 
         GrandFather grandFather = GrandFather.getInstance();
         root.getChildren().addAll(grandFather.getSprite().getProfileImage(),grandFather.getSprite().getHpBar());
         grandFather.enterBattleField(bf,0,HEIGHT_UNIT/2);
-        startThread(grandFather);
+//        startThread(grandFather);
+        grandFather.start();
 
         SnakeWoman snakeWoman = SnakeWoman.getInstance();
         root.getChildren().addAll(snakeWoman.getSprite().getProfileImage(), snakeWoman.getSprite().getHpBar());
         snakeWoman.enterBattleField(bf,WIDTH_UNIT-1,HEIGHT_UNIT/2);
-        startThread(snakeWoman);
+//        startThread(snakeWoman);
+        snakeWoman.start();
 
         ScorpionMan scorpionMan = ScorpionMan.getInstance();
         root.getChildren().addAll(scorpionMan.getSprite().getProfileImage(),scorpionMan.getSprite().getHpBar());
         scorpionMan.enterBattleField(bf,WIDTH_UNIT-4,HEIGHT_UNIT/2);
-        startThread(scorpionMan);
+//        startThread(scorpionMan);
+        scorpionMan.start();
 
         List<Minion> minions = new ArrayList<>();
         for(int i=1;i<=Minion.TOTAL_NUM;i++){
@@ -69,7 +71,8 @@ public class Main extends Application {
             root.getChildren().addAll(minion.getSprite().getProfileImage(),minion.getSprite().getHpBar());
             minion.enterBattleField(bf,WIDTH_UNIT-(i%3+1),(i<=3?-1:1)*(3-i%3)+HEIGHT_UNIT/2);
 
-            startThread(minion);
+//            startThread(minion);
+            minion.start();
         }
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -101,9 +104,9 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    private void startThread(Creature creature){
-        Thread thread = new Thread(creature);
-        thread.setName(creature.getName());
-        thread.start();
-    }
+//    private void startThread(Creature creature){
+//        Thread thread = new Thread(creature);
+//        thread.setName(creature.getCreatureName());
+//        thread.start();
+//    }
 }

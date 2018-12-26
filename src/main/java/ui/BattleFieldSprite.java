@@ -1,5 +1,6 @@
 package ui;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
@@ -12,6 +13,7 @@ public class BattleFieldSprite {
 
     private Image darkGrass = ImageLoader.getImage("DarkGrass");
     private Image lightGrass = ImageLoader.getImage("LightGrass");
+    private Canvas canvas;
 
     private SelectOutlineSprite outline = new SelectOutlineSprite();
 
@@ -27,6 +29,7 @@ public class BattleFieldSprite {
     }
 
     public void draw(int length, Canvas canvas, Group root){
+        this.canvas = canvas;
         for(int i=0;i<fields.size();i++){
             List<Image> row = fields.get(i);
             for(int j=0;j<row.size();j++){
@@ -41,5 +44,9 @@ public class BattleFieldSprite {
 
     public SelectOutlineSprite getOutline() {
         return outline;
+    }
+
+    public void toBack(){
+        Platform.runLater(()->{canvas.toBack();});
     }
 }

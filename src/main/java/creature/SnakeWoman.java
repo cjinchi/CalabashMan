@@ -1,5 +1,6 @@
 package creature;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import ui.ImageLoader;
 
@@ -18,7 +19,34 @@ public class SnakeWoman extends PCCreature{
 
     @Override
     public void run() {
-        //TODO
-        System.out.println("snake");
+        int num = 0;
+        while (alive){
+            try {
+                Thread.sleep(500);
+                num++;
+
+                Creature[] nearbyCreatures = bf.getNearbyCreatures(this.x,this.y);
+                int nearbyEnemyNum = getEnemyNum(nearbyCreatures);
+
+                if(fightingTimer==null&& nearbyEnemyNum>0){
+                    Platform.runLater(()->{startFightingAnimation();});
+                }else if(fightingTimer!=null&& nearbyEnemyNum==0){
+                    Platform.runLater(()->{stopFightingAnimation();});
+                }
+
+                if(nearbyEnemyNum>0){
+                    for(Creature creature:nearbyCreatures){
+                        if(creature instanceof PlayerCreature){
+                            creature.decreaseHp(this,power/nearbyEnemyNum);
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if(fightingTimer!=null){
+            Platform.runLater(()->{stopFightingAnimation();});
+        }
     }
 }

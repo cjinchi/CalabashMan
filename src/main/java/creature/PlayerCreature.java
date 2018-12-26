@@ -24,7 +24,7 @@ public class PlayerCreature extends Creature{
 
     @Override
     public void run() {
-        while (true){
+        while (alive){
             try {
                 Thread.sleep(500);
 
@@ -32,21 +32,24 @@ public class PlayerCreature extends Creature{
                 int nearbyEnemyNum = getEnemyNum(nearbyCreatures);
 
                 if(fightingTimer==null&& nearbyEnemyNum>0){
-                    Platform.runLater(()->{startFightingAnimation();});
+                    startFightingAnimation();
                 }else if(fightingTimer!=null&& nearbyEnemyNum ==0){
-                    Platform.runLater(()->{stopFightingAnimation();});
+                    stopFightingAnimation();
                 }
 
                 if(nearbyEnemyNum>0){
                     for(Creature creature:nearbyCreatures){
                         if(creature instanceof PCCreature){
-                            creature.decreaseHp(power/nearbyEnemyNum);
+                            creature.decreaseHp(this,power/nearbyEnemyNum);
                         }
                     }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        if(getFightingTimer()!=null){
+            stopFightingAnimation();
         }
     }
 }

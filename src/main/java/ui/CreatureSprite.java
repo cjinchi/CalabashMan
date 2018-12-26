@@ -1,7 +1,9 @@
 package ui;
 
 import app.Main;
+import javafx.application.Platform;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -33,13 +35,15 @@ public class CreatureSprite {
     }
 
     public void moveToByPixel(int x,int y){
-        profileImage.setX(x);
-        profileImage.setY(y);
-        hpBar.setTranslateX(x+(UNIT_LENGTH-hpBarWidth)/2);
-        hpBar.setTranslateY(y);
+        Platform.runLater(()->{
+            profileImage.setX(x);
+            profileImage.setY(y);
+            hpBar.setTranslateX(x+(UNIT_LENGTH-hpBarWidth)/2);
+            hpBar.setTranslateY(y);
 
-        this.xPixel = x;
-        this.yPixel = y;
+            this.xPixel = x;
+            this.yPixel = y;
+        });
     }
 
     public void moveToByUnit(int x,int y){
@@ -47,7 +51,9 @@ public class CreatureSprite {
     }
 
     public void setHp(int hpValue,int hpMaxValue){
-        hpBar.setProgress((double)hpValue/(double)hpMaxValue);
+        Platform.runLater(()->{
+            hpBar.setProgress((double)hpValue/(double)hpMaxValue);
+        });
     }
 
     public int getXPixel() {
@@ -64,5 +70,18 @@ public class CreatureSprite {
 
     public int getYUnit(){
         return yPixel/UNIT_LENGTH;
+    }
+
+    public void becomeDead(){
+        Platform.runLater(()->{
+            hpBar.setTranslateX(-2*UNIT_LENGTH);
+            hpBar.setTranslateY(-2*UNIT_LENGTH);
+
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(-1);
+            profileImage.setEffect(colorAdjust);
+
+            profileImage.toBack();
+        });
     }
 }

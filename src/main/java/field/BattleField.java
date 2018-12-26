@@ -2,6 +2,7 @@ package field;
 
 import creature.Creature;
 import creature.PCCreature;
+import javafx.application.Platform;
 import ui.BattleFieldSprite;
 
 public  class BattleField {
@@ -31,8 +32,6 @@ public  class BattleField {
             return false;
         }
         if(isValidPosition(fromX,fromY)&&creatures[fromX][fromY]!=creature){
-            System.out.println(creatures[x][y].getName());
-            System.out.println(creature.getName());
             return false;
         }
         creatures[x][y] = creature;
@@ -56,10 +55,10 @@ public  class BattleField {
         }
         if(creatures[x][y]==null||creatures[x][y] instanceof PCCreature){
             currentSelectCreature = null;
-            bfs.getOutline().moveToByUnit(-1,-1);
+            Platform.runLater(()->{bfs.getOutline().moveToByUnit(-1,-1);});
         }else{
             currentSelectCreature = creatures[x][y];
-            bfs.getOutline().moveToByUnit(x,y);
+            Platform.runLater(()->{bfs.getOutline().moveToByUnit(x,y);});
         }
     }
 
@@ -74,5 +73,22 @@ public  class BattleField {
         nearby[2] = (isValidPosition(x,y-1)?creatures[x][y-1]:null);
         nearby[3] = (isValidPosition(x,y+1)?creatures[x][y+1]:null);
         return nearby;
+    }
+
+    public synchronized void getOutOfField(Creature creature,int x,int y){
+        if(!isValidPosition(x,y)){
+            return;
+        }
+        if(creatures[x][y]!=creature){
+            return;
+        }
+        creatures[x][y] = null;
+    }
+
+    public synchronized void deselectCurrentSelectCreature(Creature creature){
+        if(currentSelectCreature==creature){
+            currentSelectCreature = null;
+            Platform.runLater(()->{bfs.getOutline().moveToByUnit(-1,-1);});
+        }
     }
 }

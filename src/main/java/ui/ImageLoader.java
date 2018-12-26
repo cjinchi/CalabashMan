@@ -13,7 +13,7 @@ public class ImageLoader {
 
 
         if(!images.containsKey(name)){
-            String fileName = null;
+            String fileName;
             switch (name){
                 case "Calabash1":fileName = "1.png";break;
                 case "Calabash2":fileName = "2.png";break;

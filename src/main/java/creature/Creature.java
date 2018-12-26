@@ -8,7 +8,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import ui.CreatureSprite;
 
-public abstract class Creature implements Runnable{
+public abstract class Creature extends Thread{
     protected CreatureSprite sprite;
     private String name;
     protected BattleField bf;
@@ -19,12 +19,13 @@ public abstract class Creature implements Runnable{
     protected int maxhp;
     protected int power = 10;
     protected AnimationTimer fightingTimer;
+    protected boolean alive = true;
 
     public CreatureSprite getSprite() {
         return sprite;
     }
 
-    public String getName() {
+    public String getCreatureName() {
         return name;
     }
 
@@ -123,7 +124,7 @@ public abstract class Creature implements Runnable{
             @Override
             public void handle(long now) {
                 //I Love Math
-                sprite.getProfileImage().setRotate(Math.sin(now/100000000)*20);
+                Platform.runLater(()->{sprite.getProfileImage().setRotate(Math.sin(now/100000000)*20);});
             }
         });
         getFightingTimer().start();
@@ -131,9 +132,10 @@ public abstract class Creature implements Runnable{
 
     protected synchronized void stopFightingAnimation(){
         if(getFightingTimer()==null){
-            throw new RuntimeException();
+//            throw new RuntimeException();
+            return;
         }
-        sprite.getProfileImage().setRotate(0);
+        Platform.runLater(()->{sprite.getProfileImage().setRotate(0);});
         getFightingTimer().stop();
         setFightingTimer(null);
     }
@@ -150,12 +152,27 @@ public abstract class Creature implements Runnable{
         this.fightingTimer = timer;
     }
 
-    public void decreaseHp(int n){
+    public void decreaseHp(Creature creature,int n){
         int newHp = hp - n;
         hp = newHp>0?newHp:0;
         Platform.runLater(()->{sprite.setHp(hp,maxhp);});
         if(hp==0){
-            //TODO:dead
+            becomeDead();
+            System.out.println(creature.getCreatureName()+" 杀死了 "+this.getCreatureName());
         }
+    }
+
+    private void becomeDead(){
+        //remove myself from battle filed
+        bf.getOutOfField(this,x,y);
+        //stop any animation or behavior
+        alive = false;
+        //turn sprite into dead state
+        sprite.becomeDead();
+        //remove select
+        bf.deselectCurrentSelectCreature(this);
+        bf.getBfs().toBack();
+
+
     }
 }
