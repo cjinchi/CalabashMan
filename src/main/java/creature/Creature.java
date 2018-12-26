@@ -159,6 +159,7 @@ public abstract class Creature extends Thread{
         if(hp==0){
             becomeDead();
             System.out.println(creature.getCreatureName()+" 杀死了 "+this.getCreatureName());
+            Main.getUnc().show(creature.getCreatureName()+" 杀死了 "+this.getCreatureName());
         }
     }
 

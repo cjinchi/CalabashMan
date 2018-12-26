@@ -29,9 +29,9 @@ public class SnakeWoman extends PCCreature{
                 int nearbyEnemyNum = getEnemyNum(nearbyCreatures);
 
                 if(fightingTimer==null&& nearbyEnemyNum>0){
-                    Platform.runLater(()->{startFightingAnimation();});
+                    startFightingAnimation();
                 }else if(fightingTimer!=null&& nearbyEnemyNum==0){
-                    Platform.runLater(()->{stopFightingAnimation();});
+                    stopFightingAnimation();
                 }
 
                 if(nearbyEnemyNum>0){
@@ -46,7 +46,7 @@ public class SnakeWoman extends PCCreature{
             }
         }
         if(fightingTimer!=null){
-            Platform.runLater(()->{stopFightingAnimation();});
+            stopFightingAnimation();
         }
     }
 }

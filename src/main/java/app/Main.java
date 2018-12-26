@@ -11,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import notification.UpperNotificationController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class Main extends Application {
     public static final int HEIGHT_UNIT = 11;
     public static final int UNIT_LENGTH = 60;
 
+    private static UpperNotificationController unc = new UpperNotificationController();
 
     public void start(Stage primaryStage) throws Exception {
 
@@ -32,9 +34,10 @@ public class Main extends Application {
 
         Canvas canvas = new Canvas(WIDTH_UNIT*UNIT_LENGTH,HEIGHT_UNIT*UNIT_LENGTH);
         root.getChildren().add(canvas);
-
         BattleField bf = new BattleField(WIDTH_UNIT,HEIGHT_UNIT);
         bf.getBfs().draw(UNIT_LENGTH,canvas,root);
+
+
 
 //        List<CalabashMan> brothers = new ArrayList<>();
         for(int i=1;i<=7;i++){
@@ -75,6 +78,8 @@ public class Main extends Application {
             minion.start();
         }
 
+        unc.draw(root,UNIT_LENGTH,WIDTH_UNIT,HEIGHT_UNIT);
+
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -109,4 +114,9 @@ public class Main extends Application {
 //        thread.setName(creature.getCreatureName());
 //        thread.start();
 //    }
+
+
+    public static UpperNotificationController getUnc() {
+        return unc;
+    }
 }
