@@ -30,6 +30,7 @@ public class ImageLoader {
                 case "DarkGrass":fileName = "grass_dark.png";break;
                 case "LightGrass":fileName = "grass_light.png";break;
                 case "CreatureSelect":fileName = "select.png";break;
+                case "NotificationBackground":fileName = "intro.png";break;
                 default:throw new RuntimeException("Invalid image name.");
             }
             images.put(name,new Image(fileName));

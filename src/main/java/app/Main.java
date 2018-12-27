@@ -11,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import notification.MainNotificationController;
 import notification.UpperNotificationController;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Main extends Application {
     public static final int UNIT_LENGTH = 60;
 
     private static UpperNotificationController unc = new UpperNotificationController();
+    private static MainNotificationController mnc = new MainNotificationController();
 
     public void start(Stage primaryStage) throws Exception {
 
@@ -79,6 +81,8 @@ public class Main extends Application {
         }
 
         unc.draw(root,UNIT_LENGTH,WIDTH_UNIT,HEIGHT_UNIT);
+        mnc.draw(root,UNIT_LENGTH,WIDTH_UNIT,HEIGHT_UNIT);
+        mnc.show("HELLO");
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

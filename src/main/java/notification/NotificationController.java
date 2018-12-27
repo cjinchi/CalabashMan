@@ -17,8 +17,8 @@ public abstract class NotificationController {
         this.widthUnit = widthUnit;
         this.heightUnit = heightUnit;
 
-        afterDrawing();
+        afterDrawingText(root);
     }
 
-    protected abstract void afterDrawing();
+    protected abstract void afterDrawingText(Group root);
 }

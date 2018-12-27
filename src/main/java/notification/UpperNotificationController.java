@@ -2,11 +2,10 @@ package notification;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.scene.canvas.Canvas;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 
 public class UpperNotificationController extends NotificationController{
     private AnimationTimer timer;
@@ -47,13 +46,13 @@ public class UpperNotificationController extends NotificationController{
     }
 
     @Override
-    protected void afterDrawing() {
+    protected void afterDrawingText(Group root) {
         text.setFont(Font.font("Times New Roman", FontWeight.BOLD, 34));
         text.setFill(Color.RED);
-        text.setStroke(Color.BLACK);
+        text.setStroke(Color.RED);
 //        text.setText("大娃 击败 喽啰1");
         text.setWrappingWidth(300);
-        text.setX((widthUnit*unitLength-300)/2);
+        text.setX((widthUnit*unitLength-text.getWrappingWidth())/2);
         text.setY(-30);
     }
 }
