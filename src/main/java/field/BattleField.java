@@ -1,12 +1,22 @@
 package field;
 
+import app.Main;
 import creature.Creature;
 import creature.PCCreature;
+import creature.PlayerCreature;
+import creature.SnakeWoman;
 import javafx.application.Platform;
 import ui.BattleFieldSprite;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public  class BattleField {
     private BattleFieldSprite bfs;
+    private Main app;
+    private List<Creature> playerCreatures = new ArrayList<>();
+    private List<Creature> pcCreatures = new ArrayList<>();
 
     private Creature[][] creatures;
     private int width,height;
@@ -46,7 +56,15 @@ public  class BattleField {
     }
 
     public boolean enter(Creature creature,int x,int y){
-        return moveTo(creature,x,y,-1,-1);
+        boolean succussful = moveTo(creature,x,y,-1,-1);
+        if(succussful){
+            if(creature instanceof PlayerCreature){
+                playerCreatures.add(creature);
+            }else{
+                pcCreatures.add(creature);
+            }
+        }
+        return succussful;
     }
 
     public void clickOn(int x,int y){
@@ -82,6 +100,21 @@ public  class BattleField {
         if(creatures[x][y]!=creature){
             return;
         }
+
+        if(creatures[x][y] instanceof PlayerCreature){
+            playerCreatures.remove(creature);
+            if(playerCreatures.size()<=0){
+                Main.getMnc().show("失败");
+                app.setGameStatus(false);
+            }
+        }else{
+            pcCreatures.remove(creature);
+            if(pcCreatures.size()<=0){
+                Main.getMnc().show("成功");
+                app.setGameStatus(false);
+            }
+        }
+
         creatures[x][y] = null;
     }
 
@@ -91,4 +124,27 @@ public  class BattleField {
             Platform.runLater(()->{bfs.getOutline().moveToByUnit(-1,-1);});
         }
     }
+
+    public void setMainController(Main app){
+        this.app = app;
+    }
+
+    private SnakeWoman sw = SnakeWoman.getInstance();
+
+    public void checkSkillEffect(double angle){
+        if(angle<=90){
+            angle = 90- angle;
+        }else{
+            angle = 270 - angle;
+        }
+        double tanRadian = Math.tan((angle*Math.PI)/180);
+        double denominator = Math.sqrt(tanRadian*tanRadian+1);
+        for(Creature creature:playerCreatures){
+            double distance = Math.abs(tanRadian*creature.getPixelX()-creature.getPixelY()+sw.getPixelY()-tanRadian*sw.getPixelX())/denominator;
+            if(distance<10){
+                Platform.runLater(()->{creature.decreaseHp(sw,200);});
+            }
+        }
+    }
+
 }

@@ -24,8 +24,8 @@ public class UpperNotificationController extends NotificationController{
             @Override
             public void handle(long now) {
                 if(!sleeping){
-                    double newY = (now - startTime)/7000000-30;
-                    if(Math.abs(newY-30)<3){
+                    double newY = (now - startTime)/5000000-20;
+                    if(newY>40){
                         Platform.runLater(()->{text.setY(40);});
                         sleeping = true;
                         sleepingStartTime = System.nanoTime();
@@ -50,7 +50,6 @@ public class UpperNotificationController extends NotificationController{
         text.setFont(Font.font("Times New Roman", FontWeight.BOLD, 34));
         text.setFill(Color.RED);
         text.setStroke(Color.RED);
-//        text.setText("大娃 击败 喽啰1");
         text.setWrappingWidth(300);
         text.setX((widthUnit*unitLength-text.getWrappingWidth())/2);
         text.setY(-30);

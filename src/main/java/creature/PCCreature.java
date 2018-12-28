@@ -36,10 +36,10 @@ public class PCCreature extends  Creature {
                 Creature[] nearbyCreatures = bf.getNearbyCreatures(this.x,this.y);
                 int nearbyEnemyNum = getEnemyNum(nearbyCreatures);
 
-                if(fightingTimer==null&& nearbyEnemyNum>0){
-                    startFightingAnimation();
-                }else if(fightingTimer!=null&& nearbyEnemyNum==0){
-                    stopFightingAnimation();
+                if(!fightingTimer.isRunning()&&nearbyEnemyNum>0){
+                    setFightAnimationStatus(true);
+                }else if(fightingTimer.isRunning()&& nearbyEnemyNum==0){
+                    setFightAnimationStatus(false);
                 }
 
                 if(nearbyEnemyNum>0){
@@ -53,8 +53,13 @@ public class PCCreature extends  Creature {
                 e.printStackTrace();
             }
         }
-        if(getFightingTimer()!=null){
-            stopFightingAnimation();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(fightingTimer.isRunning()){
+            setFightAnimationStatus(false);
         }
 
     }

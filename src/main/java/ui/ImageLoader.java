@@ -26,7 +26,7 @@ public class ImageLoader {
                 case "SnakeWoman":fileName = "snake.png";break;
                 case "ScorpionMan":fileName = "scorpion.png";break;
                 case "Minion":fileName = "minion.png";break;
-                case "Fire":fileName = "fire.png";break;
+                case "Fire":fileName = "fire.jpg";break;
                 case "DarkGrass":fileName = "grass_dark.png";break;
                 case "LightGrass":fileName = "grass_light.png";break;
                 case "CreatureSelect":fileName = "select.png";break;

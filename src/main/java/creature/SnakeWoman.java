@@ -1,7 +1,10 @@
 package creature;
 
+import field.BattleField;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import ui.FireSkillSprite;
 import ui.ImageLoader;
 
 public class SnakeWoman extends PCCreature{
@@ -17,6 +20,28 @@ public class SnakeWoman extends PCCreature{
         return sw;
     }
 
+    private FireSkillSprite fss = new FireSkillSprite(this);
+    private AnimationTimer fireTimer = new AnimationTimer() {
+        @Override
+        public void start() {
+            startTime = System.nanoTime();
+            super.start();
+        }
+
+        private long startTime;
+        @Override
+        public void handle(long now) {
+            long angle = ((now-startTime)/40000000)%180;
+            fss.setAngle(angle);
+            if(angle%2==0){
+                bf.checkSkillEffect(angle);
+            }
+            if(Math.abs(angle-180)<3){
+                stopSkill();
+            }
+        }
+    };
+
     @Override
     public void run() {
         int num = 0;
@@ -24,14 +49,18 @@ public class SnakeWoman extends PCCreature{
             try {
                 Thread.sleep(500);
                 num++;
+                if(num == 40){
+                    startSkill();
+                    num = 0;
+                }
 
                 Creature[] nearbyCreatures = bf.getNearbyCreatures(this.x,this.y);
                 int nearbyEnemyNum = getEnemyNum(nearbyCreatures);
 
-                if(fightingTimer==null&& nearbyEnemyNum>0){
-                    startFightingAnimation();
-                }else if(fightingTimer!=null&& nearbyEnemyNum==0){
-                    stopFightingAnimation();
+                if(!fightingTimer.isRunning()&&nearbyEnemyNum>0){
+                    setFightAnimationStatus(true);
+                }else if(fightingTimer.isRunning()&&nearbyEnemyNum==0){
+                    setFightAnimationStatus(false);
                 }
 
                 if(nearbyEnemyNum>0){
@@ -45,8 +74,39 @@ public class SnakeWoman extends PCCreature{
                 e.printStackTrace();
             }
         }
-        if(fightingTimer!=null){
-            stopFightingAnimation();
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        if(fightingTimer.isRunning()){
+            setFightAnimationStatus(false);
+        }
+    }
+
+    public FireSkillSprite getFss() {
+        return fss;
+    }
+
+    public void startSkill(){
+        //show
+        Platform.runLater(()->{
+            fss.getFireImage().toFront();
+            sprite.getProfileImage().toFront();
+            sprite.getHpBar().toFront();
+        });
+        //start
+        fireTimer.start();
+    }
+
+    public void stopSkill(){
+        fireTimer.stop();
+        fss.hide();
+    }
+
+    private BattleField bf;
+
+    public void setBf(BattleField bf) {
+        this.bf = bf;
     }
 }

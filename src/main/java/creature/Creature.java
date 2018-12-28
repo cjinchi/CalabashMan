@@ -8,7 +8,41 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import ui.CreatureSprite;
 
+import java.time.format.DecimalStyle;
+
 public abstract class Creature extends Thread{
+
+    class FightingAnimationTimer extends AnimationTimer{
+        private boolean running = false;
+        @Override
+        public void handle(long now) {
+            //I Love Math
+            Platform.runLater(() -> {
+                sprite.getProfileImage().setRotate(Math.sin(now / 100000000) * 20);
+            });
+        }
+
+        @Override
+        public synchronized void start() {
+            if(!running){
+                running = true;
+                super.start();
+            }
+        }
+
+        @Override
+        public synchronized void stop() {
+            if(running){
+                running = false;
+                super.stop();
+            }
+        }
+
+        public boolean isRunning() {
+            return running;
+        }
+    }
+
     protected CreatureSprite sprite;
     private String name;
     protected BattleField bf;
@@ -18,7 +52,7 @@ public abstract class Creature extends Thread{
     protected int hp;
     protected int maxhp;
     protected int power = 10;
-    protected AnimationTimer fightingTimer;
+    protected FightingAnimationTimer fightingTimer = new FightingAnimationTimer();
     protected boolean alive = true;
 
     public CreatureSprite getSprite() {
@@ -62,10 +96,29 @@ public abstract class Creature extends Thread{
                     final int xDeltaPixel = (xDstPixel>xOldPixel?1:(xDstPixel==xOldPixel?0:-1));
                     final int yDeltaPixel = (yDstPixel>yOldPixel?1:(yDstPixel==yOldPixel?0:-1));
 
-                    @Override
-                    public void handle(long now) {
+                    private boolean isArrived(int x,int y ){
+                        boolean xArrived,yArrived;
+                        if(xDeltaPixel == 0){
+                            xArrived = true;
+                        }else if(xDeltaPixel<0){
+                            xArrived = (x<=xDstPixel);
+                        }else{
+                            xArrived = (x>=xDstPixel);
+                        }
+                        if(yDeltaPixel == 0){
+                            yArrived = true;
+                        }else if(yDeltaPixel<0){
+                            yArrived = (y<= yDstPixel);
+                        }else{
+                            yArrived = (y>=yDstPixel);
+                        }
+                        return xArrived&&yArrived;
+                    }
 
-                        if(Math.abs(sprite.getXPixel()- xDstPixel)<10&&Math.abs(sprite.getYPixel()- yDstPixel)<10){
+                    @Override
+                        public void handle(long now) {
+
+                        if(isArrived(sprite.getXPixel(),sprite.getYPixel())){
                             Platform.runLater(()->{
                                 sprite.moveToByPixel(xDstPixel, yDstPixel);
                                 if(selected){
@@ -116,40 +169,21 @@ public abstract class Creature extends Thread{
 
     protected abstract int getEnemyNum(Creature[] creatures);
 
-    protected synchronized void startFightingAnimation(){
-        if(getFightingTimer()!=null){
-            throw new RuntimeException();
-        }
-        setFightingTimer(new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                //I Love Math
-                Platform.runLater(()->{sprite.getProfileImage().setRotate(Math.sin(now/100000000)*20);});
+    protected synchronized void setFightAnimationStatus(boolean enable){
+        if(enable){
+            if(!fightingTimer.isRunning()){
+                fightingTimer.start();
             }
-        });
-        getFightingTimer().start();
-    }
-
-    protected synchronized void stopFightingAnimation(){
-        if(getFightingTimer()==null){
-//            throw new RuntimeException();
-            return;
+        }else{
+            if(fightingTimer.isRunning()){
+                fightingTimer.stop();
+                Platform.runLater(()->{sprite.getProfileImage().setRotate(0);});
+            }
         }
-        Platform.runLater(()->{sprite.getProfileImage().setRotate(0);});
-        getFightingTimer().stop();
-        setFightingTimer(null);
     }
 
     public synchronized boolean isMoving(){
         return moving;
-    }
-
-    public synchronized AnimationTimer getFightingTimer() {
-        return fightingTimer;
-    }
-
-    private synchronized void setFightingTimer(AnimationTimer timer){
-        this.fightingTimer = timer;
     }
 
     public void decreaseHp(Creature creature,int n){
@@ -158,8 +192,7 @@ public abstract class Creature extends Thread{
         Platform.runLater(()->{sprite.setHp(hp,maxhp);});
         if(hp==0){
             becomeDead();
-            System.out.println(creature.getCreatureName()+" 杀死了 "+this.getCreatureName());
-            Main.getUnc().show(creature.getCreatureName()+" 杀死了 "+this.getCreatureName());
+            Main.getUnc().show(creature.getCreatureName()+" 击败 "+this.getCreatureName());
         }
     }
 
@@ -176,4 +209,13 @@ public abstract class Creature extends Thread{
 
 
     }
+
+    public double getPixelX(){
+        return x*Main.UNIT_LENGTH;
+    }
+
+    public double getPixelY(){
+        return y*Main.UNIT_LENGTH;
+    }
+
 }
