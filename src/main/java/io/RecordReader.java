@@ -18,12 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecordReader {
-    public static List<Action> read(String fileName){
+    public static List<Action> read(File file){
         try {
             List<Action> actions = new ArrayList<>();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document document = db.parse(new File(fileName));
+            Document document = db.parse(file);
 
             NodeList actionNodeList = document.getDocumentElement().getElementsByTagName("action");
 
@@ -56,7 +56,7 @@ public class RecordReader {
     }
 
 //    public static void main(String[] args) {
-//        List<Action> actions = read("2018-12-28T16:24:17.608Z.xml");
+//        List<Action> actions = read("");
 //        for(Action action:actions){
 //            if(action instanceof MouseAction){
 //                System.out.println(((MouseAction) action).getX()+" "+((MouseAction) action).getY());

@@ -104,13 +104,13 @@ public  class BattleField {
             playerCreatures.remove(creature);
             if(playerCreatures.size()<=0){
                 Main.getMnc().show("失败");
-                app.setType(Main.GameType.FINISH);
+                app.setType(Main.GameType.FINISH,Main.getType()== Main.GameType.PLAY);
             }
         }else{
             pcCreatures.remove(creature);
             if(pcCreatures.size()<=0){
                 Main.getMnc().show("成功");
-                app.setType(Main.GameType.FINISH);
+                app.setType(Main.GameType.FINISH,Main.getType()== Main.GameType.PLAY);
             }
         }
 

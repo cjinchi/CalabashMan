@@ -9,6 +9,7 @@ import field.BattleField;
 import io.RecordReader;
 import io.RecordWriter;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,10 +17,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import notification.MainNotificationController;
 import notification.UpperNotificationController;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -29,9 +32,6 @@ public class Main extends Application {
     public static final int WIDTH_UNIT = 13;
     public static final int HEIGHT_UNIT = 11;
     public static final int UNIT_LENGTH = 60;
-
-//    private boolean running = false;
-//    private boolean ignoreAllInput = false;
 
     private static UpperNotificationController unc = new UpperNotificationController();
     private static MainNotificationController mnc = new MainNotificationController();
@@ -98,15 +98,20 @@ public class Main extends Application {
 
         unc.draw(root,UNIT_LENGTH,WIDTH_UNIT,HEIGHT_UNIT);
         mnc.draw(root,UNIT_LENGTH,WIDTH_UNIT,HEIGHT_UNIT);
-        mnc.show("明月几时有把酒问青天不知天上宫阙今夕是何年我欲乘风归去又恐琼楼玉宇高处不胜寒");
+        mnc.show("1、按下空格键开始游戏，游戏过程会自动保存。\n" +
+                "2、按下L键可选择一个文件进行回放。\n" +
+                "3、在游戏过程中，您可以使用鼠标选中任意存活的正方角色，然后通过W、S、A、D键控制其行动。\n" +
+                "4、任意一方被全部击败时游戏结束，另一方获胜。");
         snakeWoman.getFss().hide();
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if(type == GameType.PLAY){
-                    actionMouseClickedHandle((int)event.getX(),(int)event.getY());
-                    actions.add(new MouseAction(System.nanoTime()-recordStartTime,(int)event.getX(),(int)event.getY()));
+                    Platform.runLater(()->{
+                        actionMouseClickedHandle((int)event.getX(),(int)event.getY());
+                        actions.add(new MouseAction(System.nanoTime()-recordStartTime,(int)event.getX(),(int)event.getY()));
+                    });
                 }
             }
         });
@@ -120,17 +125,24 @@ public class Main extends Application {
                         recordStartTime = System.nanoTime();
                         mnc.hide();
                         unc.show("       游戏开始");
-                        setType(GameType.PLAY);
+                        setType(GameType.PLAY,false);
                         for (Creature creatureThread : creatures) {
                             creatureThread.start();
                         }
                         creatures.clear();
                     }else if (event.getCode()==KeyCode.L){
-                        List<Action> replayActions = RecordReader.read("2018-12-29T06:53:27.242Z.xml");
+                        FileChooser fileChooser = new FileChooser();
+                        fileChooser.setTitle("选择一个回放文件");
+                        File file = fileChooser.showOpenDialog(primaryStage);
+                        if(file==null){
+                            return;
+                        }
+
+                        List<Action> replayActions = RecordReader.read(file);
                         recordStartTime = System.nanoTime();
                         mnc.hide();
                         unc.show("       回放开始");
-                        setType(GameType.REPLAY);
+                        setType(GameType.REPLAY,false);
                         for (Creature creatureThread : creatures) {
                             creatureThread.start();
                         }
@@ -143,8 +155,10 @@ public class Main extends Application {
                     event.getCode()==KeyCode.S||
                     event.getCode()==KeyCode.A||
                     event.getCode()==KeyCode.D){
-                        actionKeyPressedHandle(event.getCode());
-                        actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
+                        Platform.runLater(()->{
+                            actionKeyPressedHandle(event.getCode());
+                            actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
+                        });
                     }
                 }
             }
@@ -163,12 +177,13 @@ public class Main extends Application {
         return mnc;
     }
 
-    public void setType(GameType type){
+    public void setType(GameType type,boolean save){
         this.type = type;
         if(type == GameType.FINISH){
             snakeWoman.stopSkill();
-            RecordWriter.write(actions);
-            System.out.println(actions.size());
+            if(save){
+                RecordWriter.write(actions);
+            }
         }
     }
 
@@ -220,6 +235,8 @@ public class Main extends Application {
     }
 
     public static void hasSnakeWomanStartSkill(){
-        actions.add(new SkillAction(System.nanoTime()-recordStartTime));
+        Platform.runLater(()->{
+            actions.add(new SkillAction(System.nanoTime()-recordStartTime));
+        });
     }
 }

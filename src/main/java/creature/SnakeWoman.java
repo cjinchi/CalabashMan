@@ -53,7 +53,7 @@ public class SnakeWoman extends PCCreature{
             try {
                 Thread.sleep(500);
                 num++;
-                if(num == 40&&Main.getType()== Main.GameType.PLAY&&random.nextBoolean()){
+                if(num == 40&&Main.getType()== Main.GameType.PLAY&&true){
                     startSkill();
                     Main.hasSnakeWomanStartSkill();
                     num = 0;
