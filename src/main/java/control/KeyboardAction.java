@@ -13,4 +13,9 @@ public class KeyboardAction extends Action{
     public KeyCode getCode() {
         return code;
     }
+
+    @Override
+    public String getType() {
+        return "KEYBOARD";
+    }
 }

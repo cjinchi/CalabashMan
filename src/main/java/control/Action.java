@@ -1,6 +1,6 @@
 package control;
 
-public class Action {
+public abstract class Action {
     protected long time;
 
     public Action(long time){
@@ -10,4 +10,6 @@ public class Action {
     public long getTime() {
         return time;
     }
+
+    public abstract String getType();
 }

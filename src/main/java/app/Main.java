@@ -1,7 +1,11 @@
 package app;
 
+import control.Action;
+import control.KeyboardAction;
+import control.MouseAction;
 import creature.*;
 import field.BattleField;
+import io.RecordWriter;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -32,6 +36,9 @@ public class Main extends Application {
     private static MainNotificationController mnc = new MainNotificationController();
 
     private SnakeWoman snakeWoman = SnakeWoman.getInstance();
+
+    private List<Action> actions = new ArrayList<>();
+    private long recordStartTime;
 
     public void start(Stage primaryStage) throws Exception {
 
@@ -95,6 +102,7 @@ public class Main extends Application {
                 }
                 if(getGameStatus()){
                     bf.clickOn(((int)event.getX())/UNIT_LENGTH,((int)event.getY())/UNIT_LENGTH);
+                    actions.add(new MouseAction(System.nanoTime()-recordStartTime,(int)event.getX(),(int)event.getY()));
                 }
 
             }
@@ -109,6 +117,8 @@ public class Main extends Application {
                 Creature creature = bf.getCurrentSelectCreature();
                 if (event.getCode() == KeyCode.SPACE) {
                     if(!getGameStatus()){
+                        actions.clear();
+                        recordStartTime = System.nanoTime();
                         mnc.hide();
                         unc.show("       游戏开始");
                         setGameStatus(true);
@@ -123,15 +133,19 @@ public class Main extends Application {
                         switch (event.getCode()) {
                             case W:
                                 creature.moveUp();
+                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
                                 break;
                             case S:
                                 creature.moveDown();
+                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
                                 break;
                             case A:
                                 creature.moveLeft();
+                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
                                 break;
                             case D:
                                 creature.moveRight();
+                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
                                 break;
                         }
                     }
@@ -158,6 +172,8 @@ public class Main extends Application {
         if(!running){
             snakeWoman.stopSkill();
             ignoreAllInput = true;
+            RecordWriter.write(actions);
+            System.out.println(actions.size());
         }
     }
 

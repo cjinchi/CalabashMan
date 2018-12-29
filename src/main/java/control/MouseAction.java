@@ -18,4 +18,9 @@ public class MouseAction extends Action{
     public int getY() {
         return y;
     }
+
+    @Override
+    public String getType() {
+        return "MOUSE";
+    }
 }
