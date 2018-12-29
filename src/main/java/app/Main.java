@@ -3,10 +3,11 @@ package app;
 import control.Action;
 import control.KeyboardAction;
 import control.MouseAction;
+import control.SkillAction;
 import creature.*;
 import field.BattleField;
+import io.RecordReader;
 import io.RecordWriter;
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -15,30 +16,36 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import notification.MainNotificationController;
 import notification.UpperNotificationController;
-import ui.FireSkillSprite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application {
     public static final int WIDTH_UNIT = 13;
     public static final int HEIGHT_UNIT = 11;
     public static final int UNIT_LENGTH = 60;
 
-    private boolean running = false;
-    private boolean ignoreAllInput = false;
+//    private boolean running = false;
+//    private boolean ignoreAllInput = false;
 
     private static UpperNotificationController unc = new UpperNotificationController();
     private static MainNotificationController mnc = new MainNotificationController();
 
+    private BattleField bf = new BattleField(WIDTH_UNIT,HEIGHT_UNIT);
+
+    private List<Creature> creatures = new ArrayList<>();
     private SnakeWoman snakeWoman = SnakeWoman.getInstance();
 
-    private List<Action> actions = new ArrayList<>();
-    private long recordStartTime;
+    private static List<Action> actions = new ArrayList<>();
+    private static long recordStartTime;
+
+    public enum GameType {NOT_BEGIN,PLAY,REPLAY, FINISH}
+    private static GameType type = GameType.NOT_BEGIN;
 
     public void start(Stage primaryStage) throws Exception {
 
@@ -52,11 +59,11 @@ public class Main extends Application {
 
         Canvas canvas = new Canvas(WIDTH_UNIT*UNIT_LENGTH,HEIGHT_UNIT*UNIT_LENGTH);
         root.getChildren().add(canvas);
-        BattleField bf = new BattleField(WIDTH_UNIT,HEIGHT_UNIT);
+
         bf.getBfs().draw(UNIT_LENGTH,canvas,root);
         bf.setMainController(this);
 
-        List<Creature> creatures = new ArrayList<>();
+
         for(int i=1;i<=7;i++){
             CalabashMan man = CalabashMan.getInstance(i);
             creatures.add(man);
@@ -97,60 +104,49 @@ public class Main extends Application {
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(ignoreAllInput){
-                    return;
-                }
-                if(getGameStatus()){
-                    bf.clickOn(((int)event.getX())/UNIT_LENGTH,((int)event.getY())/UNIT_LENGTH);
+                if(type == GameType.PLAY){
+                    actionMouseClickedHandle((int)event.getX(),(int)event.getY());
                     actions.add(new MouseAction(System.nanoTime()-recordStartTime,(int)event.getX(),(int)event.getY()));
                 }
-
             }
         });
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if(ignoreAllInput){
-                    return;
-                }
-                Creature creature = bf.getCurrentSelectCreature();
-                if (event.getCode() == KeyCode.SPACE) {
-                    if(!getGameStatus()){
+                if(type == GameType.NOT_BEGIN){
+                    if(event.getCode() == KeyCode.SPACE){
                         actions.clear();
                         recordStartTime = System.nanoTime();
                         mnc.hide();
                         unc.show("       游戏开始");
-                        setGameStatus(true);
+                        setType(GameType.PLAY);
                         for (Creature creatureThread : creatures) {
                             creatureThread.start();
                         }
                         creatures.clear();
-                    }
-
-                } else if (creature != null) {
-                    if(getGameStatus()){
-                        switch (event.getCode()) {
-                            case W:
-                                creature.moveUp();
-                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
-                                break;
-                            case S:
-                                creature.moveDown();
-                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
-                                break;
-                            case A:
-                                creature.moveLeft();
-                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
-                                break;
-                            case D:
-                                creature.moveRight();
-                                actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
-                                break;
+                    }else if (event.getCode()==KeyCode.L){
+                        List<Action> replayActions = RecordReader.read("2018-12-29T06:53:27.242Z.xml");
+                        recordStartTime = System.nanoTime();
+                        mnc.hide();
+                        unc.show("       回放开始");
+                        setType(GameType.REPLAY);
+                        for (Creature creatureThread : creatures) {
+                            creatureThread.start();
                         }
+                        creatures.clear();
+                        replayActionsHandler(replayActions);
                     }
                 }
-
+                else if(type == GameType.PLAY){
+                    if(event.getCode()==KeyCode.W||
+                    event.getCode()==KeyCode.S||
+                    event.getCode()==KeyCode.A||
+                    event.getCode()==KeyCode.D){
+                        actionKeyPressedHandle(event.getCode());
+                        actions.add(new KeyboardAction(System.nanoTime()-recordStartTime,event.getCode()));
+                    }
+                }
             }
         });
 
@@ -167,17 +163,63 @@ public class Main extends Application {
         return mnc;
     }
 
-    public void setGameStatus(boolean running){
-        this.running = running;
-        if(!running){
+    public void setType(GameType type){
+        this.type = type;
+        if(type == GameType.FINISH){
             snakeWoman.stopSkill();
-            ignoreAllInput = true;
             RecordWriter.write(actions);
             System.out.println(actions.size());
         }
     }
 
-    public synchronized boolean getGameStatus(){
-        return running;
+    public synchronized static GameType getType(){
+        return type;
+    }
+
+    private void actionMouseClickedHandle(int x,int y){
+        bf.clickOn(x/UNIT_LENGTH,y/UNIT_LENGTH);
+    }
+
+    private void actionKeyPressedHandle(KeyCode code){
+
+
+        Creature creature = bf.getCurrentSelectCreature();
+        if(creature!=null){
+            switch (code) {
+                case W:
+                    creature.moveUp();
+                    break;
+                case S:
+                    creature.moveDown();
+                    break;
+                case A:
+                    creature.moveLeft();
+                    break;
+                case D:
+                    creature.moveRight();
+                    break;
+            }
+        }
+    }
+
+    private void replayActionsHandler(List<Action> replayActions){
+        for(Action action:replayActions){
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(action instanceof KeyboardAction){
+                        actionKeyPressedHandle(((KeyboardAction) action).getCode());
+                    }else if(action instanceof MouseAction){
+                        actionMouseClickedHandle(((MouseAction) action).getX(),((MouseAction) action).getY());
+                    }else if(action instanceof SkillAction){
+                        snakeWoman.startSkill();
+                    }
+                }
+            },action.getTime()/1000000);
+        }
+    }
+
+    public static void hasSnakeWomanStartSkill(){
+        actions.add(new SkillAction(System.nanoTime()-recordStartTime));
     }
 }

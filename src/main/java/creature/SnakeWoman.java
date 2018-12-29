@@ -1,11 +1,14 @@
 package creature;
 
+import app.Main;
 import field.BattleField;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import ui.FireSkillSprite;
 import ui.ImageLoader;
+
+import java.util.Random;
 
 public class SnakeWoman extends PCCreature{
     private SnakeWoman(Image image , String name) {
@@ -45,12 +48,14 @@ public class SnakeWoman extends PCCreature{
     @Override
     public void run() {
         int num = 0;
+        Random random = new Random(47);
         while (alive){
             try {
                 Thread.sleep(500);
                 num++;
-                if(num == 40){
+                if(num == 40&&Main.getType()== Main.GameType.PLAY&&random.nextBoolean()){
                     startSkill();
+                    Main.hasSnakeWomanStartSkill();
                     num = 0;
                 }
 

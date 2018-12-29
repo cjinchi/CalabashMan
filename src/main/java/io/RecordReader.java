@@ -55,14 +55,14 @@ public class RecordReader {
         return null;
     }
 
-    public static void main(String[] args) {
-        List<Action> actions = read("2018-12-28T16:24:17.608Z.xml");
-        for(Action action:actions){
-            if(action instanceof MouseAction){
-                System.out.println(((MouseAction) action).getX()+" "+((MouseAction) action).getY());
-            }else if(action instanceof KeyboardAction){
-                System.out.println(((KeyboardAction) action).getCode().getName());
-            }
-        }
-    }
+//    public static void main(String[] args) {
+//        List<Action> actions = read("2018-12-28T16:24:17.608Z.xml");
+//        for(Action action:actions){
+//            if(action instanceof MouseAction){
+//                System.out.println(((MouseAction) action).getX()+" "+((MouseAction) action).getY());
+//            }else if(action instanceof KeyboardAction){
+//                System.out.println(((KeyboardAction) action).getCode().getName());
+//            }
+//        }
+//    }
 }

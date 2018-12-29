@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import ui.BattleFieldSprite;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public  class BattleField {
@@ -105,13 +104,13 @@ public  class BattleField {
             playerCreatures.remove(creature);
             if(playerCreatures.size()<=0){
                 Main.getMnc().show("失败");
-                app.setGameStatus(false);
+                app.setType(Main.GameType.FINISH);
             }
         }else{
             pcCreatures.remove(creature);
             if(pcCreatures.size()<=0){
                 Main.getMnc().show("成功");
-                app.setGameStatus(false);
+                app.setType(Main.GameType.FINISH);
             }
         }
 
