@@ -7,33 +7,35 @@
 
 ## 主要特性
 1、动画效果
-- 不同于直接修改坐标使人物“瞬移”，使用AnimationTimer实现了人物的平滑移动
+- 不同于直接修改坐标使人物“瞬移”，使用AnimationTimer实现了人物的平滑移动(GIF)
 
 ![move](./image/move.gif)
-- 当人物的上、下、左、右任一方向有敌军的时候，人物会进入战斗状态
+- 当人物的上、下、左、右任一方向有敌军的时候，人物会进入战斗状态(GIF)
 
 ![fight](./image/fight.gif)
 
 2、用户交互
-- 游戏开始前会有操作提示
-
-<img src="./image/main.png" width="600" />
 
 - 用户可以使用鼠标、键盘控制正方人物的移动。多个葫芦娃同时攻击一个敌人能以更小的代价消灭对方
 
-- 画面上方以弹窗的形式通报当前游戏状态
+- 游戏开始前会有操作提示(PNG)
+
+<img src="./image/main.png" width="600" />
+
+- 画面上方以弹窗的形式通报当前游戏状态(GIF)
 
 ![notification](./image/notification.gif)
 
 3、其他
 - 赋予蛇精一个额外的技能(模仿自[安琪拉](https://pvp.qq.com/web201605/herodetail/142.shtml))，每20秒有50%的几率触发。该技能威力较大，因此正方应尽快消灭蛇精。
 
-4、完整流程
+4、完整流程(GIF)
 
 ![full](./image/full.gif)
 
 ## 系统框架
 1、模块简介
+
 |包名|功能|
 |---|---|
 |**app**|JavaFx主类模块，定义app主循环|
