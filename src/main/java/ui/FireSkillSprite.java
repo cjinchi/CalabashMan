@@ -1,7 +1,6 @@
 package ui;
 
 import app.Main;
-import com.sun.xml.internal.ws.model.ParameterImpl;
 import creature.Creature;
 import creature.SnakeWoman;
 import javafx.application.Platform;
