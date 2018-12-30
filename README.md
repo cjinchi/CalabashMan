@@ -1,9 +1,14 @@
+[![Build Status](https://travis-ci.com/cjinchi/CalabashMan.png)](https://travis-ci.com/cjinchi/CalabashMan)
+
 # CalabashMan
 该项目是[java-2018f课程](https://github.com/njuics/app-2018f)的[大作业](https://github.com/njuics/java-2018f-homework/tree/master/Final%20Project)，使用JavaFX开发一个葫芦娃大战妖精的应用。
 
 本页面含有4张gif图片与若干png图片，共8MB，可能需要较长的加载时间。
 
 ## 测试环境
+- JDK 1.8.0_191
+- Maven 3.3.9
+- JUnit 5.3.2
 
 ## 主要特性
 1、动画效果
@@ -65,7 +70,7 @@ public static GrandFather getInstance() {
 }
 ```
 ## 游戏回放
-游戏回放模块选用XML作为存储文件格式。在一局游戏中，局势主要由玩家操作与随机释放的技能决定，因此回放文件存储了所有用户操作与随机数结果。具体而言，在control模块中定义了`Abstract class Action`，由此具体实现了键盘操作`KeyboardAction`、鼠标操作`MouseAction`和技能释放操作（实际上由随机数操控）`SkillAction`，最终将游戏过程抽象为`List<Action>`并存储在XML文件中。
+游戏回放模块选用XML作为存储文件格式。在一局游戏中，局势主要由玩家操作与随机释放的技能决定，因此回放文件存储了所有用户操作与随机数结果。具体而言，在control模块中定义了`abstract class Action`，由此具体实现了键盘操作`KeyboardAction`、鼠标操作`MouseAction`和技能释放操作（实际上由随机数操控）`SkillAction`，最终将游戏过程抽象为`List<Action>`并存储在XML文件中。
 文件样例：
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
