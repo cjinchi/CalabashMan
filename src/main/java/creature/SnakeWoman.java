@@ -84,9 +84,7 @@ public class SnakeWoman extends PCCreature{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if(fightingTimer.isRunning()){
-            setFightAnimationStatus(false);
-        }
+        fightingTimer.stop();
     }
 
     public FireSkillSprite getFss() {

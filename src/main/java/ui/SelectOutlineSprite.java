@@ -1,5 +1,6 @@
 package ui;
 
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 
 public class SelectOutlineSprite {
@@ -11,20 +12,26 @@ public class SelectOutlineSprite {
     }
 
     public void setLength(int length){
-        selectOutline.setFitWidth(length);
-        selectOutline.setFitHeight(length);
+        Platform.runLater(()->{
+            selectOutline.setFitWidth(length);
+            selectOutline.setFitHeight(length);
 
-        this.length = length;
+            this.length = length;
+        });
     }
 
     public void moveToByUnit(int x, int y){
-        selectOutline.setX(x*length);
-        selectOutline.setY(y*length);
+        Platform.runLater(()->{
+            selectOutline.setX(x*length);
+            selectOutline.setY(y*length);
+        });
     }
 
     public void moveToByPixel(int x,int y){
-        selectOutline.setX(x);
-        selectOutline.setY(y);
+        Platform.runLater(()->{
+            selectOutline.setX(x);
+            selectOutline.setY(y);
+        });
     }
 
 }

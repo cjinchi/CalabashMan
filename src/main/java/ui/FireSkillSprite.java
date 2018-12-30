@@ -4,6 +4,7 @@ import app.Main;
 import com.sun.xml.internal.ws.model.ParameterImpl;
 import creature.Creature;
 import creature.SnakeWoman;
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 
 public class FireSkillSprite {
@@ -25,25 +26,29 @@ public class FireSkillSprite {
     private static final double mainWidthPixelMinusHalfUnit = Main.WIDTH_UNIT*Main.UNIT_LENGTH - Main.UNIT_LENGTH/2;
 
     public void setAngle(double angle){
-        double radian = (angle*Math.PI)/180;
 
-        fireImage.setRotate(-angle);
-        if(angle<=90){
-            fireImage.setFitHeight((mainHeightPixel)/(2*Math.cos(radian)));
-            fireImage.setX(mainWidthPixelMinusHalfUnit -(Math.tan(radian))*mainHeightPixel/4);
-            fireImage.setY(mainHeightPixel*0.25-fireImage.getFitHeight()/2);
-        }else{
-            radian=Math.PI - radian;
-            fireImage.setFitHeight((mainHeightPixel)/(2*Math.cos(radian)));
-            fireImage.setX(mainWidthPixelMinusHalfUnit -(Math.tan(radian))*mainHeightPixel/4);
-            fireImage.setY(mainHeightPixel*0.75-fireImage.getFitHeight()/2);
-        }
+
+        Platform.runLater(()->{
+            double radian = (angle*Math.PI)/180;
+            fireImage.setRotate(-angle);
+            if(angle<=90){
+                fireImage.setFitHeight((mainHeightPixel)/(2*Math.cos(radian)));
+                fireImage.setX(mainWidthPixelMinusHalfUnit -(Math.tan(radian))*mainHeightPixel/4);
+                fireImage.setY(mainHeightPixel*0.25-fireImage.getFitHeight()/2);
+            }else{
+                radian=Math.PI - radian;
+                fireImage.setFitHeight((mainHeightPixel)/(2*Math.cos(radian)));
+                fireImage.setX(mainWidthPixelMinusHalfUnit -(Math.tan(radian))*mainHeightPixel/4);
+                fireImage.setY(mainHeightPixel*0.75-fireImage.getFitHeight()/2);
+            }
+        });
     }
 
     public void hide(){
-
-        fireImage.setRotate(0);
-        fireImage.setX(-100);
+        Platform.runLater(()->{
+            fireImage.setRotate(0);
+            fireImage.setX(-100);
+        });
     }
 
 

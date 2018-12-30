@@ -34,8 +34,8 @@ public abstract class Creature extends Thread{
         public synchronized void stop() {
             if(running){
                 running = false;
-                super.stop();
             }
+            super.stop();
         }
 
         public boolean isRunning() {
@@ -43,12 +43,13 @@ public abstract class Creature extends Thread{
         }
     }
 
+
     protected CreatureSprite sprite;
     private String name;
     protected BattleField bf;
     protected int x = -1;
     protected int y = -1;
-    private boolean moving = false;
+    private volatile boolean moving = false;
     protected int hp;
     protected int maxhp;
     protected int power = 10;
@@ -116,7 +117,7 @@ public abstract class Creature extends Thread{
                     }
 
                     @Override
-                        public void handle(long now) {
+                    public void handle(long now) {
 
                         if(isArrived(sprite.getXPixel(),sprite.getYPixel())){
                             Platform.runLater(()->{
