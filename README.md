@@ -1,7 +1,7 @@
 # CalabashMan
 该项目是[java-2018f课程](https://github.com/njuics/app-2018f)的[大作业](https://github.com/njuics/java-2018f-homework/tree/master/Final%20Project)，使用JavaFX开发一个葫芦娃大战妖精的应用。
 
-本页面含有4张gif图片与若干png图片，共MB，可能需要较长的加载时间。
+本页面含有4张gif图片与若干png图片，共8MB，可能需要较长的加载时间。
 
 ## 测试环境
 
@@ -29,7 +29,7 @@
 3、其他
 - 赋予蛇精一个额外的技能(模仿自[安琪拉](https://pvp.qq.com/web201605/herodetail/142.shtml))，每20秒有50%的几率触发。该技能威力较大，因此正方应尽快消灭蛇精。
 
-4、完整流程(GIF)
+4、完整流程(GIF,约5MB)
 
 ![full](./image/full.gif)
 
@@ -65,6 +65,29 @@ public static GrandFather getInstance() {
 }
 ```
 ## 游戏回放
+游戏回放模块选用XML作为存储文件格式。在一局游戏中，局势主要由玩家操作与随机释放的技能决定，因此回放文件存储了所有用户操作与随机数结果。具体而言，在control模块中定义了`Abstract class Action`，由此具体实现了键盘操作`KeyboardAction`、鼠标操作`MouseAction`和技能释放操作（实际上由随机数操控）`SkillAction`，最终将游戏过程抽象为`List<Action>`并存储在XML文件中。
+文件样例：
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<game>
+    <action>
+        <type>MOUSE</type>
+        <time>582575441</time>
+        <x>100</x>
+        <y>329</y>
+    </action>
+    <action>
+        <type>KEYBOARD</type>
+        <time>731265155</time>
+        <keycode>D</keycode>
+    </action>
+    <action>
+        <type>SKILL</type>
+        <time>20120217225</time>
+    </action>
+</game>
+```
+
 ## 参考资料 & 素材来源
 1、[Introduction to JavaFX for Game Development](https://gamedevelopment.tutsplus.com/tutorials/introduction-to-javafx-for-game-development--cms-23835)
 
