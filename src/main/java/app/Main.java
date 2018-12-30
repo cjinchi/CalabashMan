@@ -54,7 +54,7 @@ public class Main extends Application {
 
         Group root = new Group();
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("../hp.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/hp.css").toExternalForm());
         primaryStage.setScene(scene);
 
         Canvas canvas = new Canvas(WIDTH_UNIT*UNIT_LENGTH,HEIGHT_UNIT*UNIT_LENGTH);
