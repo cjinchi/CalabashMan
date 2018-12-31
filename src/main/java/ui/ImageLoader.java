@@ -10,8 +10,6 @@ public class ImageLoader {
     private static Map<String, Image>  images = new HashMap<>();
 
     public static Image getImage(String name){
-
-
         if(!images.containsKey(name)){
             String fileName;
             switch (name){

@@ -11,7 +11,11 @@ public class ScorpionMan extends PCCreature {
     private static ScorpionMan sm;
      public static ScorpionMan getInstance(){
          if(sm==null){
-             sm = new ScorpionMan(ImageLoader.getImage("ScorpionMan"),"蝎子精");
+             synchronized (ScorpionMan.class){
+                 if(sm == null){
+                     sm = new ScorpionMan(ImageLoader.getImage("ScorpionMan"),"蝎子精");
+                 }
+             }
          }
          return sm;
      }

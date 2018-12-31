@@ -18,7 +18,11 @@ public class SnakeWoman extends PCCreature{
     private static SnakeWoman sw;
     public static SnakeWoman getInstance(){
         if(sw == null){
-            sw = new SnakeWoman(ImageLoader.getImage("SnakeWoman"),"蛇精");
+            synchronized (SnakeWoman.class){
+                if(sw == null){
+                    sw = new SnakeWoman(ImageLoader.getImage("SnakeWoman"),"蛇精");
+                }
+            }
         }
         return sw;
     }
