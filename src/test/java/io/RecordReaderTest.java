@@ -1,18 +1,18 @@
 package io;
 
 import control.Action;
-import control.MouseAction;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 
 public class RecordReaderTest {
     @Test
-    void readTest(){
+    public void readTest(){
         File file = new File("record.xml");
         List<Action> actions = RecordReader.read(file);
         assertFalse(actions.isEmpty());

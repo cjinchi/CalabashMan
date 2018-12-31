@@ -1,13 +1,13 @@
 package creature;
 
 import javafx.embed.swing.JFXPanel;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 public class GrandFatherTest {
     @Test
-    void grandFatherGetInstance(){
+    public void grandFatherGetInstance(){
         //disable error "Internal graphics not initialized yet"
         JFXPanel jfxPanel = new JFXPanel();
 
