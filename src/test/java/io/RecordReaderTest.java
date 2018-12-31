@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RecordTest {
+public class RecordReaderTest {
     @Test
     void readTest(){
         File file = new File("record.xml");

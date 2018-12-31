@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SingletonTest {
+public class GrandFatherTest {
     @Test
     void grandFatherGetInstance(){
         //disable error "Internal graphics not initialized yet"
