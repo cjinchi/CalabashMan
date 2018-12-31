@@ -157,6 +157,8 @@ public void grandFatherGetInstance(){
 }
 ```
 
+- 使用Travis CI：[cjinchi/CalabashMan](https://travis-ci.com/cjinchi/CalabashMan)
+
 ## 参考资料 & 素材来源
 1、[Introduction to JavaFX for Game Development](https://gamedevelopment.tutsplus.com/tutorials/introduction-to-javafx-for-game-development--cms-23835)
 
