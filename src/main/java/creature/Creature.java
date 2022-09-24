@@ -10,6 +10,8 @@ import ui.CreatureSprite;
 
 import java.time.format.DecimalStyle;
 
+// ICSTP Assignment 1: Code Review
+
 public abstract class Creature extends Thread{
 
     class FightingAnimationTimer extends AnimationTimer{
