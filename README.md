@@ -1,11 +1,20 @@
-[![Build Status](https://travis-ci.com/cjinchi/CalabashMan.png)](https://travis-ci.com/cjinchi/CalabashMan)
-
 # CalabashMan
+
 该项目是[java-2018f课程](https://github.com/njuics/app-2018f)的[大作业](https://github.com/njuics/java-2018f-homework/tree/master/Final%20Project)，使用JavaFX开发一个葫芦娃大战妖精的应用。
 
 本页面含有4张gif图片与若干png图片，共8MB，可能需要较长的加载时间。
 
+## 运行
+
+```shell
+mvn package
+java -jar target/[JAR_FILE]
+```
+
+
+
 ## 测试环境
+
 - JDK 1.8.0_191
 - Maven 3.3.9
 - JUnit 5.3.2
