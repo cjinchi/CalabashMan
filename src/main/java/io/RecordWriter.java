@@ -21,7 +21,7 @@ import java.util.List;
 public class RecordWriter {
     public static void write(List<Action> actions){
         try {
-            String fileName = Instant.now().toString()+".xml";
+            String fileName = Instant.now().toString().replace(":", "")+".xml";
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             Element root = document.createElement("game");
             for(Action action:actions){
